@@ -42,7 +42,7 @@ def cartprod1(sets: list):
     #return calc
     #return first
 
-def cartprod(old_sets):
+def cartprod5(old_sets):
     """1"""
     new_list = [list(sset) for sset in old_sets]
     def calc(sets, brack):
@@ -82,5 +82,21 @@ def cartprod(old_sets):
         return ret # + calc(rest, False) #+ ['hej']
     return calc(new_list, False)
 
+def cartprod(sets): #funkar inte för alla
+    """1"""
+    if not sets:
+        return []
+    if isinstance(sets[0], set):
+        converted = [list(sset) for sset in sets]
+        result = []
+        for i in converted[0]:
+            result += cartprod([[i]] + converted[1:])
+        return set(result)
+    first = sets[0]
+    rest = sets[1:]
+    if isinstance(first, list) and len(sets) > 1:
+        return [tuple([first[0]] + [sub_set] + cartprod(rest[1:])) for sub_set in rest[0]]
+    return first
+
 if __name__ == '__main__':
-    print(cartprod([{1,2}, {3,4,5}, {11}]))
+    print(cartprod([{1,2}, {3,4,5}, {11,8}]))
