@@ -1,3 +1,4 @@
+#%%
 """Uppgift 5"""
 
 def cartprod(sets): #funkar inte för alla
@@ -33,14 +34,14 @@ def divide_i1(n, seq):
             count = indx
     return lst
 
-def divide_i(n, seq):
-    lst = []
-    for i in range(len(n)):
-        #for ele in range()
-        pass
-    pass
+"""Uppgift 4"""
+#4a
+def sum_satisfying(f, p):
+    return lambda seq: sum([f(x) for x in seq if p(x)])
 
 if __name__ == '__main__':
     #print(cartprod([{1,2}, {3,4,5}, {11,8}]))
-    print(divide_i(3, [1, 2, 3, 4, 5]))
-
+    #print(sum_satisfying(len, str.isdigit)(['10', 'yes', 'no', 'whatever', '4711']))
+    sum_square_negative_odd = sum_satisfying((lambda num: num * num), lambda num: num < 0)
+    print(sum_square_negative_odd([-1, 0, -3, 5, 2, 7]))
+#%%

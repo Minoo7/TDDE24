@@ -75,11 +75,65 @@ def split_lists_rec(seq: list, sizes: str) -> list:
     return [seq[:amount]] + rest
 
 def alternating_jumps(seq1, seq2, maxjumps: int):
-    "test 0"
-    jumps = "de hopp som gjorts"
+    both_last = -4711
+    reached_max = -49152
+    outside_reach = -42
+    jumps = []
     index_1, index_2 = 0, 0
-    while True:
-        if 
+    while maxjumps > len(jumps):
+        distance = seq1[index_1]
+        if abs(index_2 + distance) > len(seq2)-1:
+            return (outside_reach, jumps)
+        index_2 += distance
+        jumps.append(distance)
+        if index_2 == len(seq2)-1 and index_1 == len(seq1)-1:
+            return (both_last, jumps)
+        if len(jumps) == maxjumps:
+            return (reached_max, jumps)
+
+        distance = seq2[index_2]
+        if abs(index_1 + distance) > len(seq1)-1:
+            return (outside_reach, jumps)
+        index_1 += distance
+        jumps.append(distance)
+        if index_2 == len(seq2)-1 and index_1 == len(seq1)-1:
+            return (both_last, jumps)
+    return (reached_max, jumps)
+
+def find_variants(numbers: list):
+    def gen_opers(lst, amount):
+        if amount <= 0:
+            return [[]]
+        new_list = []
+        for i in range(len(lst)): #pylint: disable=consider-using-enumerate
+            curr = lst[i]
+            rest = lst[:i] + lst[i+1:]
+            for ele in gen_opers(rest, amount-1):
+                new_list.append([curr] + ele)
+        return new_list
+    if not numbers:
+        return []
+    possible = []
+    gens = gen_opers(['+', '-', '*'], 3**(len(numbers)-1))
+    print('gens: ', gens)
+    for permutation in gen_opers(['+', '-', '*'], 3**(len(numbers)-1)):
+        prev = numbers[0]
+        for i in range(len(permutation)): #pylint: disable=consider-using-enumerate
+            print("lng: ", len(permutation))
+            oper = permutation[i]
+            print(prev)
+            if oper == '+':
+                prev += numbers[i+1]
+            elif oper == '-':
+                prev -= numbers[i+1]
+            elif oper == '*':
+                prev *= numbers[i+1]
+        possible.append((permutation, prev))
+    return possible
+
+
+def same_elements(elems1, elems2):
+    return set(elems1) == set(elems2)
 
 if __name__ == '__main__':
     NEST = True
@@ -99,6 +153,11 @@ if __name__ == '__main__':
         assert split_lists_rec([1, 2, 3, "x"], "12") == (None, None)
         assert split_lists_rec([1, 2], "12") == (None, None)
         assert split_lists_rec([1, 2, 3], "102") == [[1], [], [2, 3]]
-    pass
+    
+        assert alternating_jumps([1, -42], [-42, 1], 10) == (-4711, [1, 1])
+        assert alternating_jumps([3, -42], [-42, 12, 34, 1], 10) == (-4711, [3, 1])
+        assert alternating_jumps([1, -1, 14], [-1, 1, 14], 10) == (-49152, [1, 1, -1, -1, 1, 1, -1, -1, 1, 1])
+        assert alternating_jumps([2], [1, 1, -10, 5], 10) == (-42, [2])
+    print(find_variants([12, 34]))
 
 #%%
